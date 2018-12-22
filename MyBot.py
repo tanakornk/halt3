@@ -19,6 +19,9 @@ last_ship_built = 0
 
 players = game.players
 
+max_turn = constants.MAX_TURNS
+logging.info('Max turn {}'.format(max_turn))
+
 while True:
     # Get the latest game state.
     game.update_frame()
@@ -51,7 +54,7 @@ while True:
                 continue
         elif ship.halite_amount >= constants.MAX_HALITE / 2:
             ship_status[ship.id] = "returning"
-        elif turn >= 400:
+        elif max_turn-turn >= 50 and ship.halite_amount >= 20:
             ship_status[ship.id] = "returning"
     
     
@@ -67,9 +70,14 @@ while True:
 #    if game.turn_number > 1 and me.halite_amount >= constants.SHIP_COST and not game_map[me.shipyard].is_occupied and len(me.get_ships()) < 5:
 #        command_queue.append(game.me.shipyard.spawn())
         
+    max_op_ships_num = max(hf.get_opposite_ships_num(game))
+    current_ships_num = len(me.get_ships())
+    max_ship = max(max_op_ships_num + 1,current_ships_num)
+    ship_building_interval = random.randint(10,40)
+    
     if turn == 1:
         hf.build_ship(game, command_queue,last_ship_built)
-    elif me.halite_amount >= 3000 and turn - last_ship_built >= 20 and len(me.get_ships())<= 8 and not game_map[me.shipyard].is_occupied:
+    elif me.halite_amount >= 3000 and turn - last_ship_built >= ship_building_interval and current_ships_num<= max_ship and not game_map[me.shipyard].is_occupied:
         hf.build_ship(game, command_queue,last_ship_built)
     elif turn <= 50 and me.halite_amount >= constants.SHIP_COST and not game_map[me.shipyard].is_occupied:
         hf.build_ship(game, command_queue,last_ship_built)

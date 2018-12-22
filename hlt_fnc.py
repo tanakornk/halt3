@@ -66,3 +66,11 @@ def random_move_with_condition(game, ship):
 def build_ship(game, command_queue, last_ship_built):
     command_queue.append(game.me.shipyard.spawn())
     last_ship_built = game.turn_number
+
+def get_opposite_ships_num(game):
+    my_id = game.me.id
+    ships_num = []
+    for player_id in game.players:
+        if player_id != my_id:
+            ships_num.append(len(game.players[player_id].get_ships()))
+    return ships_num
