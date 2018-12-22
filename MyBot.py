@@ -72,12 +72,13 @@ while True:
         
     max_op_ships_num = max(hf.get_opposite_ships_num(game))
     current_ships_num = len(me.get_ships())
+    logging.info("Current ship {}\nMax Opponent ship {}".format(current_ships_num,max_op_ships_num))
     max_ship = max(max_op_ships_num + 1,10)
     ship_building_interval = random.randint(10,40)
     
     if turn == 1:
         hf.build_ship(game, command_queue,last_ship_built)
-    elif me.halite_amount >= 3000 and turn - last_ship_built >= ship_building_interval and current_ships_num<= max_ship and not game_map[me.shipyard].is_occupied:
+    elif me.halite_amount >= 3000 and turn - last_ship_built >= 20 and current_ships_num<= 8 and not game_map[me.shipyard].is_occupied:
         hf.build_ship(game, command_queue,last_ship_built)
     elif turn <= 50 and me.halite_amount >= constants.SHIP_COST and not game_map[me.shipyard].is_occupied:
         hf.build_ship(game, command_queue,last_ship_built)
