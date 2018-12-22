@@ -31,18 +31,13 @@ while True:
     halite_info, total_halite, avg_halite = hf.get_map_info(game_map)
     logging.info('Total halite: {}\nAvg halite: {}'.format(total_halite,avg_halite))
     
-#    shipyards_position = [[sy.owner,sy.id,sy.position] for sy in shipyard]
-#    logging.info(shipyard_position)
-
     # A command queue holds all the commands you will run this turn.
     command_queue = []
 
     for ship in me.get_ships():
         logging.info(ship.owner)
         logging.info("Ship {} has {} halite.".format(ship.id,ship.halite_amount))
-        hf.check_surrounding(ship)
-#        log_avail_surrounding(ship)
-        
+        hf.check_surrounding(ship)        
         
         if ship.id not in ship_status:
             ship_status[ship.id] = "exploring"
@@ -63,9 +58,7 @@ while True:
         # For each of your ships, move randomly if the ship is on a low halite location or the ship is full.
         #   Else, collect halite.
         if game_map[ship.position].halite_amount < constants.MAX_HALITE / 10 or ship.is_full:
-            command_queue.append(hf.random_move(game, ship))
-
-#                ship.move(random.choice(["n", "s", "e", "w"])))
+            command_queue.append(hf.random_move_with_condition(game, ship))
         else:
             command_queue.append(ship.stay_still())
 

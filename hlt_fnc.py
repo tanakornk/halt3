@@ -58,10 +58,10 @@ def random_move_with_condition(game, ship):
     cur_halite = cur_game_map.halite_amount
     cur_has_structure = cur_game_map.has_structure
     logging.info('Halite {}, Structure {}'.format(cur_halite,cur_has_structure))
-    if cur_halite <= 20:
-        random_move(game, ship)
-    elif cur_has_structure == True:
-        random_move(game, ship)
+    if cur_halite <= 20 or cur_has_structure == True:
+        return random_move(game, ship)
+    else:
+        return ship.stay_still()
 
 def build_ship(game, command_queue, last_ship_built):
     command_queue.append(game.me.shipyard.spawn())
