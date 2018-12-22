@@ -72,7 +72,7 @@ while True:
         
     max_op_ships_num = max(hf.get_opposite_ships_num(game))
     current_ships_num = len(me.get_ships())
-    max_ship = max(max_op_ships_num + 1,current_ships_num)
+    max_ship = max(max_op_ships_num + 1,10)
     ship_building_interval = random.randint(10,40)
     
     if turn == 1:
