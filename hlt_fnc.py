@@ -1,6 +1,7 @@
 import random
 import logging
 from hlt import Position
+from operator import itemgetter
 
 # Getting all position info
 def get_map_info(game_map):
@@ -37,19 +38,28 @@ def avail_surrounding(game, ship):
             avail_pos.append(surrounding[i])
     return avail_pos
     
-def halite_surrounding(game, ship):
-    return None
-    # cur_pos = ship.position
-    # cur_halite = game.game_map[cur_pos].halite_amount
-    # surrounding = ship.position.get_surrounding_cardinals()
-    # halite_amount = [game.game_map[sr].ihalite_amount for sr in surrounding]
+def surrounding_halite(game, ship, size):
+    cur_position = ship.position
+    sur_positions = [Position(cur_position.x+x, cur_position.y+y) for x in range(-size,size+1) for y in range(-size,size+1)]
+    sur_halites = [game.game_map[pos].halite_amount for pos in sur_positions]
+    surrounding = [(sur_positions[i], sur_halites[i]) for i in range(len(sur_positions))]
+    return surrounding
+
+def move_to_max_halite(game, ship, size):
+    surrounding = surrounding_halite(game, ship, size)
+    ranked_positions = sorted(surrounding, key=itemgetter(1), reverse=True)
+    for pos in ranked_positions:
+        if game.game_map[pos[0]].is_empty:
+            direction = game.game_map.naive_navigate(ship, pos[0])
+            break
+    return ship.move(direction)
 
 def random_move(game, ship):
     avail_pos = avail_surrounding(game, ship)
     if len(avail_pos) != 0:
         destination = random.choice(avail_pos)
-        dir = game.game_map.naive_navigate(ship, destination)
-        return ship.move(dir)
+        direction = game.game_map.naive_navigate(ship, destination)
+        return ship.move(direction)
     else:
         return ship.stay_still()
     
@@ -58,7 +68,7 @@ def random_move_with_condition(game, ship):
     cur_halite = cur_game_map.halite_amount
     cur_has_structure = cur_game_map.has_structure
     logging.info('Halite {}, Structure {}'.format(cur_halite,cur_has_structure))
-    if cur_halite <= 20 or cur_has_structure == True:
+    if cur_halite <= 10 or cur_has_structure == True:
         return random_move(game, ship)
     else:
         return ship.stay_still()
